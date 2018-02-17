@@ -36,6 +36,10 @@ console.log( cube );
 function parseCube() {
   count ++;
 
+  while (scene.children.length > 0) {
+    scene.remove(scene.children[0]);
+  }
+
   newCubes.forEach(function(cube) {
     var h = cube.height;
     var currentPos = cube.position;
@@ -47,13 +51,13 @@ function parseCube() {
           pos.set(currentPos.x + i * h/2, currentPos.y + j * h/2, currentPos.z + k * h/2);
           var geom = new THREE.BoxGeometry(h / 2.1, h / 2.1, h / 2.1);
 
-          var mat = new THREE.MeshBasicMaterial( { color: color2, transparent: true } );
+          // var mat = new THREE.MeshBasicMaterial( { color: color2, transparent: true } );
 
 
-          // Logic: if two or more of x, y, z are 0, do NOT draw thw box:
-          // if (!(i == 0 && j==0) && !(k == 0 && j==0) && !(i == 0 && k==0)) {
-          if ((i ==0 && j==0) || (i ==0 && k==0) || (k ==0 && j==0)) {
-            var newCube = new THREE.Mesh(geom, mat);
+          // Logic: if two or more of x, y, z are 0, do NOT draw the box:
+          if (!(i == 0 && j==0) && !(k == 0 && j==0) && !(i == 0 && k==0)) {
+          // if ((i ==0 && j==0) || (i ==0 && k==0) || (k ==0 && j==0)) {
+            var newCube = new THREE.Mesh(geom, material2);
             newCube.position.copy(pos);
             newCube.receiveShadow = true;
             newCube.height = size / (Math.pow(3, count));
@@ -70,10 +74,12 @@ function parseCube() {
   });
 
   //Oh, of course, what we really need to do is cut out pieces, not keep redrawing cubes.
+  // Or, we can redraw cubes as long as we clear each time.
   newCubes = newerCubes;
 
 }
 
+parseCube();
 parseCube();
 
 camera.position.x = 5 + size;
@@ -88,15 +94,15 @@ light.position.set(size * 1.5, size * 1.5, size * 1.5);
 scene.add(light);
 
 function animate() {
-	// requestAnimationFrame( animate );
-	// renderer.render( scene, camera );
+	requestAnimationFrame( animate );
+	renderer.render( scene, camera );
+
+
   //
-
-
-  setTimeout( function() {
-    requestAnimationFrame( animate );
-
-  }, 1000 );  renderer.render(scene, camera);
+  // setTimeout( function() {
+  //   requestAnimationFrame( animate );
+  //
+  // }, 1000 );  renderer.render(scene, camera);
 }
 
 animate();
