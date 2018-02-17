@@ -51,7 +51,7 @@ function parseCube() {
         for (k = -1; k < 2; k ++) {
           // yes, has to be h/2 here instead of h:
           pos.set(currentPos.x + i * h/2, currentPos.y + j * h/2, currentPos.z + k * h/2);
-          var geom = new THREE.BoxGeometry(h / 2.1, h / 2.1, h / 2.1);
+          var geom = new THREE.BoxGeometry(h / 2.04, h / 2.04, h / 2.04);
 
           // var mat = new THREE.MeshBasicMaterial( { color: color2, transparent: true } );
 
