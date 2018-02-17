@@ -9,6 +9,7 @@ var material2 = new THREE.MeshLambertMaterial( { color: color2 } );
 var size = 20;
 var newCubes = [];
 var newerCubes = [];
+var count = 0;
 
 // -Setup three.js-
 var scene = new THREE.Scene();
@@ -32,14 +33,7 @@ console.log( cube );
 
 
 function parseCube() {
-  // pos.set(0, size*1.2, 0);
-  // // kinda weird, i guess if you make this local, cube could be confused about what 'geometry' meant:
-  // geometry = new THREE.BoxGeometry(3, 3, 3);
-  // var cube = new THREE.Mesh( geometry, material2 );
-  // cube.position.copy( pos );
-  // cube.receiveShadow = true;
-  // cube.castShadow = true;
-  // scene.add( cube );
+  count ++;
 
   newCubes.forEach(function(cube) {
     var h = cube.height;
@@ -52,15 +46,17 @@ function parseCube() {
           pos.set(currentPos.x + i * h/2, currentPos.y + j * h/2, currentPos.z + k * h/2);
           var geom = new THREE.BoxGeometry(h / 2.1, h / 2.1, h / 2.1);
 
-          // Logic: if two or more of x, y, z are 0, do NOT draw thw box:
+          var mat = new THREE.MeshBasicMaterial( { color: color2, transparent: true } );
 
-          if (!(i == 0 && j==0) && !(k == 0 && j==0) && !(i == 0 && k==0)) {
-            var newCube = new THREE.Mesh(geom, material2);
+
+          // Logic: if two or more of x, y, z are 0, do NOT draw thw box:
+          // if (!(i == 0 && j==0) && !(k == 0 && j==0) && !(i == 0 && k==0)) {
+          if ((i ==0 && j==0) || (i ==0 && k==0) || (k ==0 && j==0)) {
+            var newCube = new THREE.Mesh(geom, mat);
             newCube.position.copy(pos);
             newCube.receiveShadow = true;
-
+            newCube.height = size / (Math.pow(3, count));
             scene.add( newCube );
-
             newerCubes.push(newCube);
           }
 
@@ -68,8 +64,12 @@ function parseCube() {
       }
     }
 
+
+
   });
 
+  //Oh, of course, what we really need to do is cut out pieces, not keep redrawing cubes.
+  newCubes = newerCubes;
 
 }
 
@@ -87,15 +87,15 @@ light.position.set(size * 1.5, size * 1.5, size * 1.5);
 scene.add(light);
 
 function animate() {
-	requestAnimationFrame( animate );
-	renderer.render( scene, camera );
-
-
-
-  // setTimeout( function() {
-  //   requestAnimationFrame( animate );
+	// requestAnimationFrame( animate );
+	// renderer.render( scene, camera );
   //
-  // }, 400 );  renderer.render(scene, camera);
+
+
+  setTimeout( function() {
+    requestAnimationFrame( animate );
+
+  }, 1000 );  renderer.render(scene, camera);
 }
 
 animate();
