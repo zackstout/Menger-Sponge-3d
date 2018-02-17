@@ -36,9 +36,12 @@ console.log( cube );
 function parseCube() {
   count ++;
 
-  while (scene.children.length > 0) {
-    scene.remove(scene.children[0]);
-  }
+  // while (scene.children.length > 0) {
+  //   scene.remove(scene.children[0]);
+  // }
+
+  scene.remove.apply(scene, scene.children);
+
 
   newCubes.forEach(function(cube) {
     var h = cube.height;
@@ -76,11 +79,16 @@ function parseCube() {
   //Oh, of course, what we really need to do is cut out pieces, not keep redrawing cubes.
   // Or, we can redraw cubes as long as we clear each time.
   newCubes = newerCubes;
+  newerCubes = [];
 
 }
 
 parseCube();
 parseCube();
+
+console.log(newCubes);
+parseCube();
+// parseCube();
 
 camera.position.x = 5 + size;
 
