@@ -49,15 +49,22 @@ function parseCube() {
     for (i = -1; i < 2; i ++) {
       for (j = -1; j < 2; j ++) {
         for (k = -1; k < 2; k ++) {
-          pos.set(currentPos.x + i * h, currentPos.y + j * h, currentPos.z + k * h);
-          var geom = new THREE.BoxGeometry(h / 3, h / 3, h / 3);
-          var newCube = new THREE.Mesh(geom, material2);
-          newCube.position.copy(pos);
-          newCube.receiveShadow = true;
+          // yes, has to be h/2 here instead of h:
+          pos.set(currentPos.x + i * h/2, currentPos.y + j * h/2, currentPos.z + k * h/2);
+          var geom = new THREE.BoxGeometry(h / 2.1, h / 2.1, h / 2.1);
 
-          scene.add( newCube );
+          // Logic: if two or more of x, y, z are 0, do NOT draw thw box:
 
-          newerCubes.push(newCube);
+          if (!(i == 0 && j==0) && !(k == 0 && j==0) && !(i == 0 && k==0)) {
+            var newCube = new THREE.Mesh(geom, material2);
+            newCube.position.copy(pos);
+            newCube.receiveShadow = true;
+
+            scene.add( newCube );
+
+            newerCubes.push(newCube);
+          }
+
         }
       }
     }
