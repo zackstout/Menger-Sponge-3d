@@ -94,16 +94,16 @@ var count = 0;
 
 var flattenedCubes = [];
 // flatten array:
-newlist.forEach(list => {
+allLists.forEach(list => {
   list.forEach(list2 => {
-    // list2.forEach(el => {
-      flattenedCubes.push(list2);
-    });
-  // });
+    list2.forEach(el => {
+        flattenedCubes.push(el);
+      });
+  });
 });
 
 // Ok this appears to be what we want:
-// console.log(flattenedCubes);
+console.log(flattenedCubes);
 
 
 // -Setup three.js-
@@ -128,7 +128,8 @@ console.log( cube );
 
 
 flattenedCubes.forEach(cube => {
-  geometry = new THREE.BoxGeometry( 10/3 - 2, 10/3 - 2, 10/3 - 2 );
+  // console.log(cube);
+  geometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
   var make = new THREE.Mesh(geometry, material);
 
   pos.set(cube.x, cube.y, cube.z);
@@ -137,6 +138,14 @@ flattenedCubes.forEach(cube => {
   scene.add(make);
 
 });
+
+
+
+
+
+
+
+
 
 
 // var newCube = new THREE.Mesh(geom, material2);
