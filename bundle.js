@@ -1,5 +1,84 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
+// From Menger.js:
+function spliceCube(pos, size) {
+    let cubes = [];
+
+    for (let z=0; z<3; z++) {
+        for (let y=0; y<3; y++) {
+            for (let x=0; x<3; x++) {
+                const cube = {x: size*x + pos.x, y: size*y + pos.y, z: size*z + pos.z};
+                cubes.push(cube);
+            }
+        }
+    }
+    // Delete the relevant cubes:
+    cubes.splice(22, 1);
+    cubes.splice(16, 1);
+    cubes.splice(14, 1);
+    cubes.splice(13, 1);
+    cubes.splice(12, 1);
+    cubes.splice(10, 1);
+    cubes.splice(4, 1);
+    return cubes;
+}
+
+var allLists = [];
+var cubelist1 = spliceCube({x: 0, y: 1, z: 0}, 10);
+var cubelist2 = [];
+// 20-array of cubes (20):
+// console.log("Level 0: ", cubelist1);
+
+var newlist = cubelist1.map(cube => spliceCube({x: cube.x, y: cube.y, z: cube.z}, 10/3));
+
+// 20-array of cube-arrays (400):
+console.log("Level 1: ", newlist);
+
+newlist.forEach(arr => {
+    var newerlist = arr.map(cube => spliceCube({x: cube.x, y: cube.y, z: cube.z}, 10/9));
+    allLists.push(newerlist);
+});
+
+// 20-array of 20-arrays of cube-arrays (8,000):
+// console.log("Level 2: ", allLists);
+
+var moreAllLists = [];
+allLists.forEach(arr => {
+    arr.forEach(array => {
+        const list = array.map(cube => spliceCube({x: cube.x, y: cube.y, z: cube.z}, 10/27));
+        moreAllLists.push(list);
+    });
+});
+
+// 400-array of 20-arrays of cube-arrays (160,000):
+// console.log("Level 3: ", moreAllLists);
+
+var evenMoreAllLists = [];
+moreAllLists.forEach(arr => {
+    arr.forEach(array => {
+        const list = array.map(cube => spliceCube({x: cube.x, y: cube.y, z: cube.z}, 10/81));
+        evenMoreAllLists.push(list);
+    });
+});
+
+// 8,000-array of 20-arrays of cube-arrays (3,200,000):
+// console.log("Level 4: ", evenMoreAllLists);
+
+// var wowEvenMoreAllLists = [];
+// evenMoreAllLists.forEach(arr => {
+//     arr.forEach(array => {
+//         const list = array.map(cube => spliceCube({x: cube.x, y: cube.y, z: cube.z}, 10/243));
+//         wowEvenMoreAllLists.push(list);
+//     });
+// });
+
+// console.log("Level 5: ", wowEvenMoreAllLists);
+
+// Ok Level 5 stalls out the browser.
+// Wait -- it would be way more efficient to just delete the 7 elements each time, than to draw 20 elements for each cube. I think this was my idea the first time, I just failed to execute it.
+
+
+// Our original file:
 var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -11,6 +90,22 @@ var size = 20;
 var newCubes = [];
 var newerCubes = [];
 var count = 0;
+
+// console.log(evenMoreAllLists);
+
+var flattenedCubes = [];
+// flatten array:
+newlist.forEach(list => {
+  list.forEach(list2 => {
+    // list2.forEach(el => {
+      flattenedCubes.push(list2);
+    });
+  // });
+});
+
+// Ok this appears to be what we want:
+// console.log(flattenedCubes);
+
 
 // -Setup three.js-
 var scene = new THREE.Scene();
@@ -28,9 +123,45 @@ cube.receiveShadow = true;
 cube.castShadow = true;
 // scene.add( cube );
 cube.height = size;
-newCubes.push(cube);
+// newCubes.push(cube);
 
 console.log( cube );
+
+
+flattenedCubes.forEach(cube => {
+  geometry = new THREE.BoxGeometry( 10/3 - 2, 10/3 - 2, 10/3 - 2 );
+  var make = new THREE.Mesh(geometry, material);
+
+  pos.set(cube.x, cube.y, cube.z);
+  make.position.copy(pos);
+  make.receiveShadow = true;
+  scene.add(make);
+
+});
+
+
+// var newCube = new THREE.Mesh(geom, material2);
+// cube.position.copy(pos);
+// newCube.receiveShadow = true;
+// newCube.height = size / (Math.pow(3, count));
+// scene.add( newCube );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function parseCube() {
@@ -83,11 +214,12 @@ function parseCube() {
 
 }
 
-parseCube();
-parseCube();
-
-console.log(newCubes);
-parseCube();
+// Stop calling this ungainly and bloated function:
+// parseCube();
+// parseCube();
+//
+// console.log(newCubes);
+// parseCube();
 // parseCube();
 
 camera.position.x = 5 + size;

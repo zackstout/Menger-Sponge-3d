@@ -1,6 +1,6 @@
 # Menger Sponge
 
-Building the [Menger sponge](https://en.wikipedia.org/wiki/Menger_sponge) to hone my skill with three.js.
+Building the [Menger sponge](https://en.wikipedia.org/wiki/Menger_sponge) to hone my skill with three.js. To apply changes, run `browserify draw.js -o bundle.js`.
 
 ## Built With:
 - three.js
